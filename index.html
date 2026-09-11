@@ -1,692 +1,614 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="uz" class="scroll-smooth">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Senga</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --warm-white:#fbf3ee;
-    --blush:#f6e3e2;
-    --rose-100:#f2d6da;
-    --rose-300:#e7b3c1;
-    --rose-500:#d888a3;
-    --tulip-600:#bd5a80;
-    --tulip-700:#98456a;
-    --plum-900:#37202d;
-    --ink:#2c1a22;
-    --gold:#dfc09a;
-    --line: rgba(55,32,45,0.14);
-    --shadow: 0 20px 60px rgba(155,68,104,0.14);
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Siz uchun — Maxsus Hikoya</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Cormorant Garamond (Editorial Serif) & Plus Jakarta Sans (Modern Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- GSAP for Smooth Cinematic Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  @media (prefers-reduced-motion: reduce){
-    html{scroll-behavior:auto;}
-    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
-  }
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  body{
-    margin:0;
-    background:
-      radial-gradient(1200px 700px at 15% -5%, #fdeef0 0%, transparent 60%),
-      radial-gradient(1000px 700px at 100% 10%, #f7e5ea 0%, transparent 55%),
-      var(--warm-white);
-    color:var(--ink);
-    font-family:'Manrope', sans-serif;
-    font-weight:300;
-    -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
-  }
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ivory: '#FFF9F7',
+                        blush: '#F4B6C2',
+                        rose: '#E8899B',
+                        burgundy: '#2A1118',
+                        'burgundy-dark': '#1A0A0F',
+                        champagne: '#E5D4C0'
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'hero-gradient': 'linear-gradient(135deg, #1A0A0F 0%, #2A1118 60%, #3D1923 100%)',
+                        'card-gradient': 'linear-gradient(180deg, rgba(255,249,247,0.03) 0%, rgba(255,249,247,0.01) 100%)'
+                    }
+                }
+            }
+        }
+    </script>
 
-  h1,h2,h3, .serif{
-    font-family:'Cormorant Garamond', serif;
-    font-weight:500;
-    letter-spacing:0.01em;
-    color:var(--plum-900);
-  }
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFF9F7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E8899B;
+            border-radius: 3px;
+        }
 
-  .section{
-    min-height:100vh;
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    padding:8vh 6vw;
-    position:relative;
-    text-align:center;
-  }
+        body {
+            background-color: #FFF9F7;
+            color: #2A1118;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
 
-  .eyebrow-line{
-    width:34px;height:1px;background:var(--tulip-600);opacity:0.55;margin:0 auto 1.6rem;
-  }
+        h1, h2, h3, .font-serif {
+            font-family: 'Cormorant Garamond', serif;
+        }
 
-  .lede{
-    font-size:clamp(1.05rem, 1.4vw, 1.2rem);
-    line-height:1.85;
-    max-width:560px;
-    color:#5c3d48;
-    font-weight:300;
-  }
+        /* Subtle Grain Overlay */
+        .bg-grain {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+        }
 
-  /* ---------- progress stem ---------- */
-  .stem-wrap{
-    position:fixed; left:18px; top:0; bottom:0; width:26px;
-    display:flex; align-items:center; justify-content:center;
-    z-index:40; pointer-events:none;
-  }
-  .stem-track{ position:relative; width:2px; height:74vh; background:rgba(55,32,45,0.10); border-radius:2px; }
-  .stem-fill{ position:absolute; bottom:0; left:0; width:2px; height:0%; background:linear-gradient(to top, var(--tulip-700), var(--rose-300)); border-radius:2px; transition:height 0.15s linear; }
-  .stem-bloom{ position:absolute; left:50%; transform:translate(-50%, 50%) scale(0.5) rotate(0deg); bottom:0; font-size:16px; opacity:0.85; transition:bottom 0.15s linear, transform 0.4s ease; }
-  @media (max-width:720px){ .stem-wrap{display:none;} }
+        /* Glassmorphism Luxury */
+        .glass-panel {
+            background: rgba(255, 249, 247, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(232, 137, 155, 0.15);
+        }
 
-  /* ---------- curtain / hero opening ---------- */
-  #curtain{
-    position:fixed; inset:0; z-index:100;
-    background: radial-gradient(1200px 800px at 50% 30%, #fdf1f2 0%, var(--warm-white) 70%);
-    display:flex; align-items:center; justify-content:center; flex-direction:column;
-    padding:6vw; text-align:center;
-    transition:opacity 1.1s ease, visibility 1.1s ease;
-  }
-  #curtain.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+        .glass-dark {
+            background: rgba(42, 17, 24, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(232, 137, 155, 0.1);
+        }
 
-  .curtain-text{
-    font-family:'Cormorant Garamond', serif;
-    font-style:italic;
-    font-size:clamp(1.4rem, 3.4vw, 2.1rem);
-    line-height:1.7;
-    color:var(--plum-900);
-    max-width:620px;
-    opacity:0;
-    animation: curtainIn 2.2s ease forwards;
-    animation-delay:0.4s;
-  }
-  @keyframes curtainIn{
-    0%{opacity:0; transform:translateY(10px);}
-    100%{opacity:1; transform:translateY(0);}
-  }
+        /* Custom Floating Animation */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+        .animate-float {
+            animation: floatSlow 6s ease-in-out infinite;
+        }
 
-  .continue-btn{
-    margin-top:3rem;
-    opacity:0;
-    animation: curtainIn 1.6s ease forwards;
-    animation-delay:2.4s;
-  }
-
-  button{
-    font-family:'Manrope', sans-serif;
-    cursor:pointer;
-    border:none;
-    background:none;
-  }
-
-  .btn{
-    font-size:0.92rem;
-    letter-spacing:0.03em;
-    color:var(--tulip-700);
-    background:rgba(255,255,255,0.5);
-    border:1px solid rgba(155,68,104,0.28);
-    padding:0.85rem 1.9rem;
-    border-radius:100px;
-    backdrop-filter: blur(6px);
-    transition: transform 0.35s cubic-bezier(.2,.8,.2,1), background 0.35s ease, box-shadow 0.35s ease;
-  }
-  .btn:hover{ transform:translateY(-2px); background:rgba(255,255,255,0.85); box-shadow:var(--shadow); }
-  .btn:active{ transform:translateY(0px) scale(0.98); }
-  .btn:focus-visible{ outline:2px solid var(--tulip-700); outline-offset:3px; }
-
-  /* ---------- hero (tulip field) ---------- */
-  #hero{
-    position:relative;
-    overflow:hidden;
-  }
-  .tulip-field{
-    position:absolute; inset:0; z-index:0;
-    display:flex; align-items:flex-end; justify-content:center; gap:2vw;
-    padding-bottom:0;
-  }
-  .field-tulip{
-    opacity:0.5;
-    animation: sway 6s ease-in-out infinite;
-    transform-origin:bottom center;
-  }
-  .field-tulip:nth-child(odd){ animation-duration:7.5s; }
-  .field-tulip:nth-child(3n){ animation-delay:-2s; opacity:0.35;}
-  @keyframes sway{
-    0%,100%{ transform:rotate(-2.5deg);}
-    50%{ transform:rotate(2.5deg);}
-  }
-  .hero-copy{ position:relative; z-index:2; }
-  .hero-copy h1{
-    font-size:clamp(1.6rem, 4vw, 2.6rem);
-    line-height:1.5;
-    max-width:680px;
-    margin:0 auto;
-  }
-  .hero-copy .line-2{
-    display:block;
-    font-style:italic;
-    opacity:0;
-    animation: curtainIn 1.8s ease forwards;
-    animation-delay:1.1s;
-    color:var(--tulip-700);
-  }
-  .scroll-hint{
-    margin-top:3.4rem; font-size:0.78rem; letter-spacing:0.08em; color:#8a6270; opacity:0.7;
-  }
-
-  /* ---------- section 2: cards ---------- */
-  .section-heading{
-    font-size:clamp(1.7rem, 3.6vw, 2.4rem);
-    margin-bottom:0.6rem;
-  }
-  .cards-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
-    gap:1.1rem;
-    max-width:920px;
-    width:100%;
-    margin-top:3.2rem;
-  }
-  .flip-card{
-    perspective:1200px;
-    height:210px;
-  }
-  .flip-inner{
-    position:relative; width:100%; height:100%;
-    transform-style:preserve-3d;
-    transition: transform 0.9s cubic-bezier(.22,.9,.3,1);
-  }
-  .flip-card.flipped .flip-inner{ transform:rotateY(180deg); }
-  .flip-face{
-    position:absolute; inset:0;
-    border-radius:18px;
-    display:flex; align-items:center; justify-content:center;
-    flex-direction:column;
-    padding:1.4rem;
-    backface-visibility:hidden;
-    border:1px solid var(--line);
-  }
-  .flip-front{
-    background:rgba(255,255,255,0.55);
-    backdrop-filter:blur(10px);
-    box-shadow: 0 10px 30px rgba(155,68,104,0.08);
-  }
-  .flip-front .card-title{
-    font-family:'Cormorant Garamond', serif;
-    font-size:1.35rem;
-    color:var(--plum-900);
-  }
-  .flip-front svg{ margin-bottom:0.7rem; }
-  .flip-back{
-    background:linear-gradient(160deg, var(--tulip-700), var(--tulip-600));
-    color:#fdf1f3;
-    transform:rotateY(180deg);
-  }
-  .flip-back p{
-    font-family:'Cormorant Garamond', serif;
-    font-size:1.08rem;
-    line-height:1.55;
-    font-style:italic;
-  }
-  .flip-hint{ font-size:0.72rem; opacity:0.55; margin-top:0.6rem; letter-spacing:0.03em;}
-
-  /* ---------- section 3: tulip garden ---------- */
-  #garden{ background:linear-gradient(180deg, transparent, rgba(246,227,226,0.5)); }
-  .garden-plot{
-    margin-top:3rem;
-    display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-end;
-    gap:1.6rem 1.4rem; max-width:760px;
-  }
-  .plot-tulip{ position:relative; cursor:pointer; width:56px; }
-  .plot-tulip svg{ display:block; width:100%; transition: transform 0.6s cubic-bezier(.2,1,.3,1); transform: scaleY(0.55) translateY(10px); opacity:0.55;}
-  .plot-tulip.bloomed svg{ transform:scaleY(1) translateY(0); opacity:1; }
-  .plot-tulip .whisper{
-    position:absolute; bottom:115%; left:50%; transform:translateX(-50%) translateY(6px);
-    width:190px; font-family:'Cormorant Garamond', serif; font-style:italic; font-size:0.98rem;
-    line-height:1.45; color:var(--plum-900);
-    background:rgba(255,255,255,0.92); border-radius:14px; padding:0.85rem 1rem;
-    box-shadow:var(--shadow);
-    opacity:0; pointer-events:none; transition:opacity 0.5s ease, transform 0.5s ease;
-  }
-  .plot-tulip.bloomed .whisper{ opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto;}
-  .garden-hint{ margin-top:2.2rem; font-size:0.78rem; color:#8a6270; letter-spacing:0.03em;}
-
-  /* ---------- section 4: constellation ---------- */
-  #constellation{ background:radial-gradient(900px 600px at 50% 40%, rgba(255,255,255,0.4), transparent); }
-  .const-wrap{ position:relative; width:min(560px, 90vw); height:min(420px, 60vw); margin:2.6rem auto 0; }
-  .const-wrap svg{ width:100%; height:100%; overflow:visible; }
-  .const-line{
-    fill:none; stroke:var(--tulip-600); stroke-width:1.4; stroke-linecap:round;
-    stroke-dasharray:900; stroke-dashoffset:900;
-    transition: stroke-dashoffset 2.6s cubic-bezier(.2,.7,.2,1);
-  }
-  .const-wrap.in-view .const-line{ stroke-dashoffset:0; }
-  .const-dot{ fill:var(--gold); opacity:0; transition:opacity 0.6s ease; }
-  .const-wrap.in-view .const-dot{ opacity:1; transition-delay:2.4s; }
-  .const-copy{ margin-top:2.2rem; max-width:520px; }
-  .const-copy p{ font-family:'Cormorant Garamond', serif; font-size:1.15rem; font-style:italic; line-height:1.75; color:var(--plum-900); margin:0.5rem 0;}
-  .const-copy .reveal{ opacity:0; transform:translateY(8px); transition:opacity 1s ease, transform 1s ease; }
-  .const-wrap.in-view ~ .const-copy .reveal{ opacity:1; transform:translateY(0); }
-  .const-copy .reveal:nth-child(1){ transition-delay:2.8s; }
-  .const-copy .reveal:nth-child(2){ transition-delay:3.6s; }
-  .const-copy .reveal:nth-child(3){ transition-delay:4.4s; }
-  .const-copy .reveal:nth-child(4){ transition-delay:5.2s; }
-
-  /* ---------- section 5: night sky ---------- */
-  #night{
-    background: radial-gradient(1100px 700px at 50% 20%, #3a2632 0%, #2a1a22 55%, #24141c 100%);
-    color:#f6e7ea;
-  }
-  #night h2{ color:#f6e7ea; }
-  #night .lede{ color:#e6c9d0; }
-  .sky{
-    position:relative; width:min(820px, 92vw); height:min(420px, 70vw); margin-top:2.6rem;
-  }
-  .star{
-    position:absolute; width:10px; height:10px; border-radius:50%;
-    background:#ffe9c7; box-shadow:0 0 10px 2px rgba(255,220,170,0.55);
-    animation:twinkle 3.4s ease-in-out infinite;
-    transform:translate(-50%,-50%);
-  }
-  .star:hover, .star:focus-visible{ transform:translate(-50%,-50%) scale(1.5); }
-  @keyframes twinkle{ 0%,100%{opacity:0.55;} 50%{opacity:1;} }
-  .star-note{
-    position:absolute; z-index:5; width:220px;
-    background:rgba(255,247,240,0.97); color:var(--plum-900); border-radius:14px;
-    padding:0.9rem 1.05rem; font-family:'Cormorant Garamond', serif; font-style:italic; font-size:0.98rem; line-height:1.5;
-    box-shadow:0 20px 50px rgba(0,0,0,0.35);
-    opacity:0; pointer-events:none; transform:translateY(6px) translateX(-50%);
-    left:50%;
-    transition:opacity 0.4s ease, transform 0.4s ease;
-  }
-  .star-note.show{ opacity:1; pointer-events:auto; transform:translateY(-14px) translateX(-50%);}
-  .sky-hint{ margin-top:1.6rem; font-size:0.78rem; color:#cfa5ae; letter-spacing:0.03em;}
-
-  /* ---------- section 6: letter ---------- */
-  #letter{ }
-  .envelope{
-    position:relative; width:min(340px, 84vw); height:210px; margin:2.8rem auto 0; cursor:pointer;
-  }
-  .env-body{
-    position:absolute; inset:0; border-radius:8px;
-    background:linear-gradient(160deg, #fbeef0, #f5dde2);
-    border:1px solid var(--line); box-shadow:var(--shadow);
-    overflow:hidden;
-  }
-  .env-flap{
-    position:absolute; top:0; left:0; width:100%; height:100%;
-    clip-path:polygon(0 0, 50% 55%, 100% 0);
-    background:linear-gradient(160deg, #f3d7dc, #eec4cd);
-    transform-origin:top;
-    transition:transform 1.1s cubic-bezier(.4,.1,.2,1);
-    z-index:3; border-bottom:1px solid var(--line);
-  }
-  .envelope.open .env-flap{ transform:rotateX(180deg); }
-  .env-seal{
-    position:absolute; top:38%; left:50%; transform:translate(-50%,-50%); z-index:4;
-    width:38px; height:38px; border-radius:50%;
-    background:var(--tulip-700); display:flex; align-items:center; justify-content:center;
-    box-shadow:0 6px 14px rgba(155,68,104,0.4);
-    transition:opacity 0.4s ease;
-  }
-  .envelope.open .env-seal{ opacity:0; }
-  .env-hint{ position:absolute; bottom:-2.4rem; left:50%; transform:translateX(-50%); font-size:0.78rem; color:#8a6270; letter-spacing:0.03em; white-space:nowrap;}
-
-  .letter-paper{
-    max-width:560px; margin:5rem auto 0; text-align:left;
-    background:rgba(255,255,255,0.6); border:1px solid var(--line); border-radius:20px;
-    padding:2.6rem 2.4rem; backdrop-filter:blur(8px);
-    opacity:0; max-height:0; overflow:hidden;
-    transition:opacity 1.1s ease, max-height 1.4s ease, padding 1.1s ease, margin 1.1s ease;
-  }
-  .letter-paper.show{ opacity:1; max-height:900px; margin-top:3rem; }
-  .letter-paper p{
-    font-family:'Cormorant Garamond', serif; font-size:1.14rem; line-height:1.9; color:var(--plum-900);
-    margin:0 0 1rem;
-  }
-  .letter-paper .final-line{ font-style:italic; color:var(--tulip-700); margin-top:1.6rem; }
-
-  /* ---------- final section ---------- */
-  #final{ position:relative; overflow:hidden; }
-  .final-heading{
-    font-size:clamp(1.6rem, 3.6vw, 2.3rem); line-height:1.6; max-width:640px;
-  }
-  .final-heading .pause{
-    display:block; margin-top:1.1rem; font-style:italic; color:var(--tulip-700); font-size:0.85em;
-  }
-  .final-tulip{ margin:2.6rem 0 1rem; }
-  .petals-layer{
-    position:fixed; inset:0; z-index:80; pointer-events:none; overflow:hidden;
-    opacity:0; transition:opacity 1.2s ease;
-  }
-  .petals-layer.show{ opacity:1; }
-  .petal{
-    position:absolute; top:-5%; width:14px; height:14px; border-radius:60% 0 60% 0;
-    background:linear-gradient(160deg, var(--rose-300), var(--tulip-600));
-    animation: fall linear forwards;
-    opacity:0.85;
-  }
-  @keyframes fall{
-    to{ transform:translateY(115vh) translateX(var(--drift)) rotate(300deg); opacity:0.1;}
-  }
-  .petals-message{
-    position:fixed; inset:0; z-index:81; display:flex; align-items:center; justify-content:center;
-    pointer-events:none; opacity:0; transition:opacity 1.4s ease 0.6s;
-  }
-  .petals-message.show{ opacity:1; }
-  .petals-message span{
-    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:clamp(1.4rem,3.6vw,2.1rem);
-    color:var(--plum-900); background:rgba(255,247,241,0.85); padding:1.2rem 2rem; border-radius:20px;
-    backdrop-filter:blur(6px);
-  }
-
-  footer{ text-align:center; padding:3rem 1rem 4rem; font-size:0.75rem; color:#a97e89; letter-spacing:0.04em;}
-</style>
+        /* Hide Scrollbar for clean UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-ivory text-burgundy selection:bg-blush selection:text-burgundy relative">
 
-<div class="stem-wrap" aria-hidden="true">
-  <div class="stem-track">
-    <div class="stem-fill" id="stemFill"></div>
-    <div class="stem-bloom" id="stemBloom">🌷</div>
-  </div>
-</div>
+    <!-- Subtle Grain Layer -->
+    <div class="fixed inset-0 pointer-events-none bg-grain z-50"></div>
 
-<div id="curtain">
-  <p class="curtain-text">Ba'zi insonlar hayotimizga keladi...<br>va hech narsa avvalgidek bo'lmaydi.</p>
-  <div class="continue-btn">
-    <button class="btn" id="continueBtn">Davom etish →</button>
-  </div>
-</div>
+    <!-- ================= 03. HERO SECTION ================= -->
+    <section id="hero" class="relative w-full h-screen bg-hero-gradient text-ivory overflow-hidden flex flex-col justify-between px-6 md:px-16 py-12">
+        <!-- Background Ambient Glow & Floating Dust -->
+        <div class="absolute inset-0 opacity-20 pointer-events-none">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-rose rounded-full filter blur-[120px]"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blush rounded-full filter blur-[100px]"></div>
+        </div>
 
-<main id="page">
+        <!-- Realistic Botanical Tulip Accent (Photorealistic representation via high-end editorial styling) -->
+        <div class="absolute right-[-5%] md:right-[10%] top-1/2 -translate-y-1/2 w-[320px] md:w-[450px] h-[500px] md:h-[650px] pointer-events-none opacity-40 md:opacity-60 animate-float">
+            <svg viewBox="0 0 400 600" class="w-full h-full drop-shadow-2xl">
+                <defs>
+                    <linearGradient id="tulipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#F4B6C2" />
+                        <stop offset="50%" stop-color="#E8899B" />
+                        <stop offset="100%" stop-color="#8C3F50" />
+                    </linearGradient>
+                    <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#4A5D4E" />
+                        <stop offset="100%" stop-color="#2C382F" />
+                    </linearGradient>
+                </defs>
+                <!-- Stem -->
+                <path d="M200,600 Q195,400 210,320 Q215,280 200,250" fill="none" stroke="url(#stemGrad)" stroke-width="4" stroke-linecap="round"/>
+                <!-- Leaves -->
+                <path d="M205,450 Q130,420 110,350 Q160,390 208,440" fill="#3A4A3D" opacity="0.8"/>
+                <path d="M205,500 Q280,470 290,400 Q250,440 202,480" fill="#3A4A3D" opacity="0.8"/>
+                <!-- Petals (Cinematic Realism Styling) -->
+                <path d="M200,250 C160,230 140,170 160,110 C180,60 200,50 200,50 C200,50 220,60 240,110 C260,170 240,230 200,250 Z" fill="url(#tulipGrad)" opacity="0.95"/>
+                <path d="M200,250 C175,220 165,160 180,100 C190,70 200,50 200,50 C200,50 205,100 200,250 Z" fill="#FFF" opacity="0.25"/>
+                <path d="M200,260 C140,230 120,150 150,90 C165,60 190,55 200,50 C210,55 235,60 250,90 C280,150 260,230 200,260 Z" fill="url(#tulipGrad)" opacity="0.85"/>
+            </svg>
+        </div>
 
-  <section class="section" id="hero">
-    <div class="tulip-field" aria-hidden="true" id="tulipField"></div>
-    <div class="hero-copy">
-      <h1>Bu sayt aslida sen uchun emas...
-        <span class="line-2">...bu mening sen haqingdagi hislarim uchun.</span>
-      </h1>
-      <p class="scroll-hint">pastga siljiting</p>
+        <!-- Top Header Navigation / Brand -->
+        <div class="z-10 flex justify-between items-center tracking-widest uppercase text-xs font-medium text-champagne/70">
+            <span>Editorial Experience</span>
+            <span>MMXXVI</span>
+        </div>
+
+        <!-- Hero Content (Story Reveal) -->
+        <div class="z-10 max-w-2xl my-auto">
+            <p class="text-champagne/80 font-serif italic text-xl md:text-2xl mb-4 tracking-wide opacity-0" id="hero-line-1">
+                Ba'zi insonlar hayotimizga shunchaki kirib kelmaydi...
+            </p>
+            <h1 class="font-serif text-4xl md:text-7xl font-light leading-[1.1] mb-6 opacity-0" id="hero-line-2">
+                ...ular qalbimizda o'ziga xos bir iz qoldiradi.
+            </h1>
+            <div class="h-[1px] w-24 bg-rose/40 my-6 opacity-0" id="hero-line-3"></div>
+            <p class="text-champagne/90 text-sm md:text-base font-light tracking-wide mb-8 opacity-0" id="hero-line-4">
+                Bu kichik dunyo Siz uchun.
+            </p>
+            <div class="opacity-0" id="hero-btn-container">
+                <button onclick="startExperience()" class="group relative px-8 py-4 rounded-full border border-champagne/30 bg-white/5 backdrop-blur-md text-ivory text-sm tracking-widest uppercase transition-all duration-500 hover:border-blush hover:bg-white/10 hover:shadow-[0_0_30px_rgba(244,182,194,0.2)] flex items-center gap-3">
+                    <span>Boshlaymiz</span>
+                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer indicator -->
+        <div class="z-10 text-xs text-champagne/50 tracking-widest uppercase flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-rose animate-ping"></span>
+            Pastga suring
+        </div>
+    </section>
+
+    <!-- ================= 07. "SIZ HAQINGIZDA" SECTION ================= -->
+    <section id="about" class="py-28 md:py-40 px-6 md:px-16 max-w-7xl mx-auto relative">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+            
+            <!-- Left Title Area -->
+            <div class="lg:col-span-5 relative z-10">
+                <span class="text-xs uppercase tracking-widest text-rose font-semibold block mb-4">01 / Portret</span>
+                <h2 class="font-serif text-4xl md:text-6xl font-light text-burgundy leading-[1.15]">
+                    Siz haqingizda<br>
+                    <span class="italic font-normal">aytilmagan gaplar.</span>
+                </h2>
+                <p class="text-burgundy/70 mt-6 text-sm md:text-base leading-relaxed font-light">
+                    Ba'zida so'zlar yetishmaydigan, faqat yurak sezadigan o'sha beg‘ubor fazilatlar haqida...
+                </p>
+            </div>
+
+            <!-- Right Vertical Editorial List -->
+            <div class="lg:col-span-7 relative">
+                <div class="space-y-4 md:space-y-6" id="about-list">
+                    
+                    <!-- Item 01 -->
+                    <div class="about-item group relative p-6 md:p-8 rounded-2xl transition-all duration-500 hover:bg-white/80 border border-transparent hover:border-blush/30 cursor-pointer shadow-sm hover:shadow-xl">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-6">
+                                <span class="font-serif text-rose text-lg font-light tracking-widest">01</span>
+                                <h3 class="font-serif text-2xl md:text-3xl text-burgundy group-hover:translate-x-2 transition-transform duration-300">Tabassumingiz</h3>
+                            </div>
+                            <span class="text-rose opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-2 group-hover:translate-x-0 duration-300">✦</span>
+                        </div>
+                        <p class="text-burgundy/60 text-sm mt-3 pl-12 hidden group-hover:block transition-all duration-300 font-light">
+                            Atrofdagilarga nur ulashuvchi, barcha tashvishlarni bir zumda unuttiradigan iliqlik.
+                        </p>
+                    </div>
+
+                    <!-- Item 02 -->
+                    <div class="about-item group relative p-6 md:p-8 rounded-2xl transition-all duration-500 hover:bg-white/80 border border-transparent hover:border-blush/30 cursor-pointer shadow-sm hover:shadow-xl">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-6">
+                                <span class="font-serif text-rose text-lg font-light tracking-widest">02</span>
+                                <h3 class="font-serif text-2xl md:text-3xl text-burgundy group-hover:translate-x-2 transition-transform duration-300">Ko'zlaringiz</h3>
+                            </div>
+                            <span class="text-rose opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-2 group-hover:translate-x-0 duration-300">✦</span>
+                        </div>
+                        <p class="text-burgundy/60 text-sm mt-3 pl-12 hidden group-hover:block transition-all duration-300 font-light">
+                            Dunyoning eng samimiy sirlarini yashirgan, chuqur va ma'noli nigohlar.
+                        </p>
+                    </div>
+
+                    <!-- Item 03 -->
+                    <div class="about-item group relative p-6 md:p-8 rounded-2xl transition-all duration-500 hover:bg-white/80 border border-transparent hover:border-blush/30 cursor-pointer shadow-sm hover:shadow-xl">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-6">
+                                <span class="font-serif text-rose text-lg font-light tracking-widest">03</span>
+                                <h3 class="font-serif text-2xl md:text-3xl text-burgundy group-hover:translate-x-2 transition-transform duration-300">Oddiyligingiz</h3>
+                            </div>
+                            <span class="text-rose opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-2 group-hover:translate-x-0 duration-300">✦</span>
+                        </div>
+                        <p class="text-burgundy/60 text-sm mt-3 pl-12 hidden group-hover:block transition-all duration-300 font-light">
+                            Hech qanday sun'iyliksiz, boricha go'zal va takrorlanmas tabiat.
+                        </p>
+                    </div>
+
+                    <!-- Item 04 -->
+                    <div class="about-item group relative p-6 md:p-8 rounded-2xl transition-all duration-500 hover:bg-white/80 border border-transparent hover:border-blush/30 cursor-pointer shadow-sm hover:shadow-xl">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-6">
+                                <span class="font-serif text-rose text-lg font-light tracking-widest">04</span>
+                                <h3 class="font-serif text-2xl md:text-3xl text-burgundy group-hover:translate-x-2 transition-transform duration-300">Qalbingiz</h3>
+                            </div>
+                            <span class="text-rose opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-2 group-hover:translate-x-0 duration-300">✦</span>
+                        </div>
+                        <p class="text-burgundy/60 text-sm mt-3 pl-12 hidden group-hover:block transition-all duration-300 font-light">
+                            Mehribonlik va cheksiz nazokat ila to'lib-toshgan buyuk dunyo.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ================= 08. TULIP GARDEN SECTION ================= -->
+    <section id="garden" class="py-32 bg-burgundy text-ivory relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-grain pointer-events-none"></div>
+        
+        <div class="max-w-6xl mx-auto px-6 relative z-10 text-center mb-16">
+            <span class="text-xs uppercase tracking-widest text-blush font-semibold block mb-3">02 / Botanik Bog'</span>
+            <h2 class="font-serif text-3xl md:text-5xl font-light">Har bir lolada bitta ezgu o'y</h2>
+            <p class="text-champagne/70 text-sm mt-3 font-light">Gulbarglardan birini tanlang va ichidagi ma'noni kashf eting.</p>
+        </div>
+
+        <!-- Botanical Interactive Scene (7-10 Photorealistic Tulips) -->
+        <div class="max-w-6xl mx-auto px-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 relative z-10">
+            
+            <!-- Flower Card Template -->
+            <div onclick="openGardenMessage('Ba\'zan Sizning tabassumingiz kimningdir butun kunini chiroyli qilishi mumkin.')" class="group cursor-pointer flex flex-col items-center p-6 rounded-2xl glass-dark hover:bg-burgundy/90 transition-all duration-500 border border-rose/10 hover:border-rose/40 hover:-translate-y-2">
+                <div class="w-12 h-32 relative mb-4 flex items-center justify-center">
+                    <!-- Stylized botanical tulip SVG icon -->
+                    <svg viewBox="0 0 100 150" class="w-full h-full transform group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_10px_10px_rgba(232,137,155,0.2)]">
+                        <path d="M50,150 Q48,90 52,60" fill="none" stroke="#637C67" stroke-width="3"/>
+                        <path d="M50,60 C30,50 20,20 35,5 C45,0 50,20 50,20 C50,20 55,0 65,5 C80,20 70,50 50,60 Z" fill="#E8899B"/>
+                        <path d="M50,60 C40,45 35,25 45,10 C50,20 50,60 50,60 Z" fill="#F4B6C2" opacity="0.6"/>
+                    </svg>
+                </div>
+                <span class="font-serif text-xs text-champagne/60 tracking-wider">Lola I</span>
+            </div>
+
+            <div onclick="openGardenMessage('Sizdagi oddiylik va samimiylik bu dunyodagi eng noyob go\'zallikdir.')" class="group cursor-pointer flex flex-col items-center p-6 rounded-2xl glass-dark hover:bg-burgundy/90 transition-all duration-500 border border-rose/10 hover:border-rose/40 hover:-translate-y-2">
+                <div class="w-12 h-32 relative mb-4 flex items-center justify-center">
+                    <svg viewBox="0 0 100 150" class="w-full h-full transform group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_10px_10px_rgba(232,137,155,0.2)]">
+                        <path d="M50,150 Q48,90 52,60" fill="none" stroke="#637C67" stroke-width="3"/>
+                        <path d="M50,60 C30,50 20,20 35,5 C45,0 50,20 50,20 C50,20 55,0 65,5 C80,20 70,50 50,60 Z" fill="#D67A8D"/>
+                        <path d="M50,60 C40,45 35,25 45,10 C50,20 50,60 50,60 Z" fill="#E8899B" opacity="0.6"/>
+                    </svg>
+                </div>
+                <span class="font-serif text-xs text-champagne/60 tracking-wider">Lola II</span>
+            </div>
+
+            <div onclick="openGardenMessage('Har safar dunyoga boqqaningizda, atrofga iliqlik ulashasiz.')" class="group cursor-pointer flex flex-col items-center p-6 rounded-2xl glass-dark hover:bg-burgundy/90 transition-all duration-500 border border-rose/10 hover:border-rose/40 hover:-translate-y-2">
+                <div class="w-12 h-32 relative mb-4 flex items-center justify-center">
+                    <svg viewBox="0 0 100 150" class="w-full h-full transform group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_10px_10px_rgba(232,137,155,0.2)]">
+                        <path d="M50,150 Q48,90 52,60" fill="none" stroke="#637C67" stroke-width="3"/>
+                        <path d="M50,60 C30,50 20,20 35,5 C45,0 50,20 50,20 C50,20 55,0 65,5 C80,20 70,50 50,60 Z" fill="#F4B6C2"/>
+                        <path d="M50,60 C40,45 35,25 45,10 C50,20 50,60 50,60 Z" fill="#FFF" opacity="0.4"/>
+                    </svg>
+                </div>
+                <span class="font-serif text-xs text-champagne/60 tracking-wider">Lola III</span>
+            </div>
+
+            <div onclick="openGardenMessage('Sizning ovozingiz — eng sokin va huzurbaxsh ohang.')" class="group cursor-pointer flex flex-col items-center p-6 rounded-2xl glass-dark hover:bg-burgundy/90 transition-all duration-500 border border-rose/10 hover:border-rose/40 hover:-translate-y-2">
+                <div class="w-12 h-32 relative mb-4 flex items-center justify-center">
+                    <svg viewBox="0 0 100 150" class="w-full h-full transform group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_10px_10px_rgba(232,137,155,0.2)]">
+                        <path d="M50,150 Q48,90 52,60" fill="none" stroke="#637C67" stroke-width="3"/>
+                        <path d="M50,60 C30,50 20,20 35,5 C45,0 50,20 50,20 C50,20 55,0 65,5 C80,20 70,50 50,60 Z" fill="#E8899B"/>
+                        <path d="M50,60 C40,45 35,25 45,10 C50,20 50,60 50,60 Z" fill="#F4B6C2" opacity="0.6"/>
+                    </svg>
+                </div>
+                <span class="font-serif text-xs text-champagne/60 tracking-wider">Lola IV</span>
+            </div>
+
+            <div onclick="openGardenMessage('Hayot yo\'lingizda har doim bahoriy quvonch va yorug\'lik hamroh bo\'lsin.')" class="group cursor-pointer flex flex-col items-center p-6 rounded-2xl glass-dark hover:bg-burgundy/90 transition-all duration-500 border border-rose/10 hover:border-rose/40 hover:-translate-y-2">
+                <div class="w-12 h-32 relative mb-4 flex items-center justify-center">
+                    <svg viewBox="0 0 100 150" class="w-full h-full transform group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_10px_10px_rgba(232,137,155,0.2)]">
+                        <path d="M50,150 Q48,90 52,60" fill="none" stroke="#637C67" stroke-width="3"/>
+                        <path d="M50,60 C30,50 20,20 35,5 C45,0 50,20 50,20 C50,20 55,0 65,5 C80,20 70,50 50,60 Z" fill="#C46D7E"/>
+                        <path d="M50,60 C40,45 35,25 45,10 C50,20 50,60 50,60 Z" fill="#E8899B" opacity="0.5"/>
+                    </svg>
+                </div>
+                <span class="font-serif text-xs text-champagne/60 tracking-wider">Lola V</span>
+            </div>
+
+            <div onclick="openGardenMessage('Ba\'zan kichik bir e\'tibor insonning butun dunyosini o\'zgartirib yuboradi.')" class="group cursor-pointer flex flex-col items-center p-6 rounded-2xl glass-dark hover:bg-burgundy/90 transition-all duration-500 border border-rose/10 hover:border-rose/40 hover:-translate-y-2">
+                <div class="w-12 h-32 relative mb-4 flex items-center justify-center">
+                    <svg viewBox="0 0 100 150" class="w-full h-full transform group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_10px_10px_rgba(232,137,155,0.2)]">
+                        <path d="M50,150 Q48,90 52,60" fill="none" stroke="#637C67" stroke-width="3"/>
+                        <path d="M50,60 C30,50 20,20 35,5 C45,0 50,20 50,20 C50,20 55,0 65,5 C80,20 70,50 50,60 Z" fill="#F4B6C2"/>
+                        <path d="M50,60 C40,45 35,25 45,10 C50,20 50,60 50,60 Z" fill="#FFF" opacity="0.5"/>
+                    </svg>
+                </div>
+                <span class="font-serif text-xs text-champagne/60 tracking-wider">Lola VI</span>
+            </div>
+
+            <div onclick="openGardenMessage('Sizning borligingizning o\'ziyoq bu dunyoni go\'zalroq qiladi.')" class="group cursor-pointer flex flex-col items-center p-6 rounded-2xl glass-dark hover:bg-burgundy/90 transition-all duration-500 border border-rose/10 hover:border-rose/40 hover:-translate-y-2">
+                <div class="w-12 h-32 relative mb-4 flex items-center justify-center">
+                    <svg viewBox="0 0 100 150" class="w-full h-full transform group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_10px_10px_rgba(232,137,155,0.2)]">
+                        <path d="M50,150 Q48,90 52,60" fill="none" stroke="#637C67" stroke-width="3"/>
+                        <path d="M50,60 C30,50 20,20 35,5 C45,0 50,20 50,20 C50,20 55,0 65,5 C80,20 70,50 50,60 Z" fill="#E8899B"/>
+                        <path d="M50,60 C40,45 35,25 45,10 C50,20 50,60 50,60 Z" fill="#F4B6C2" opacity="0.7"/>
+                    </svg>
+                </div>
+                <span class="font-serif text-xs text-champagne/60 tracking-wider">Lola VII</span>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Garden Modal -->
+    <div id="garden-modal" class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/70 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-dark p-8 md:p-12 rounded-3xl max-w-lg w-full text-center relative border border-rose/30 transform scale-95 transition-transform duration-300" id="garden-modal-content">
+            <button onclick="closeGardenMessage()" class="absolute top-4 right-4 text-champagne/60 hover:text-ivory text-xl p-2">&times;</button>
+            <span class="text-rose text-2xl block mb-4">✦</span>
+            <p id="garden-modal-text" class="font-serif text-2xl md:text-3xl text-ivory font-light leading-relaxed mb-6"></p>
+            <button onclick="closeGardenMessage()" class="px-6 py-2 rounded-full border border-rose/30 text-xs tracking-widest uppercase text-champagne hover:bg-rose/20 transition-colors">Yopish</button>
+        </div>
     </div>
-  </section>
 
-  <section class="section" id="why">
-    <div class="eyebrow-line"></div>
-    <h2 class="section-heading">Nega aynan sen?</h2>
-    <p class="lede">Har bir karta — bitta kichik sabab. Ustiga bosing.</p>
-    <div class="cards-grid" id="cardsGrid"></div>
-  </section>
+    <!-- ================= 09. CONSTELLATION SECTION ================= -->
+    <section class="py-32 bg-burgundy-dark text-ivory relative overflow-hidden text-center px-6">
+        <div class="max-w-3xl mx-auto relative z-10">
+            <span class="text-xs uppercase tracking-widest text-rose font-semibold block mb-4">03 / Kainat</span>
+            <h2 class="font-serif text-3xl md:text-5xl font-light mb-8 leading-tight">
+                Sevgini raqam bilan o'lchab bo'lmaydi.<br>
+                <span class="italic font-normal text-champagne/80">Uni isbotlash uchun ham katta va'dalar kerak emas.</span>
+            </h2>
+            
+            <!-- Minimalist Tulip Constellation Graphic -->
+            <div class="w-48 h-48 mx-auto my-12 relative flex items-center justify-center">
+                <svg viewBox="0 0 200 200" class="w-full h-full opacity-80 animate-pulse">
+                    <circle cx="100" cy="40" r="2" fill="#F4B6C2"/>
+                    <circle cx="70" cy="70" r="1.5" fill="#FFF"/>
+                    <circle cx="130" cy="70" r="1.5" fill="#FFF"/>
+                    <circle cx="100" cy="110" r="2" fill="#F4B6C2"/>
+                    <circle cx="100" cy="170" r="1.5" fill="#FFF"/>
+                    <!-- Connecting lines -->
+                    <path d="M100,40 L70,70 L100,110 L130,70 Z" fill="none" stroke="rgba(244,182,194,0.3)" stroke-width="0.75"/>
+                    <path d="M100,110 L100,170" fill="none" stroke="rgba(244,182,194,0.3)" stroke-width="0.75"/>
+                </svg>
+            </div>
+            
+            <p class="text-champagne/60 text-sm font-light tracking-widest uppercase">Har bir yulduz — bir ezgu tilak</p>
+        </div>
+    </section>
 
-  <section class="section" id="garden">
-    <div class="eyebrow-line"></div>
-    <h2 class="section-heading">Lolazor</h2>
-    <p class="lede">Bu yerda har bir lola — seni o'ylab aytilmagan bir gap.</p>
-    <div class="garden-plot" id="gardenPlot"></div>
-    <p class="garden-hint">lolalarga teging, ular ochilsin</p>
-  </section>
+    <!-- ================= 10. NIGHT SKY INTERACTIVE SECTION ================= -->
+    <section class="py-28 bg-[#15070B] text-ivory relative px-6 overflow-hidden">
+        <div class="max-w-4xl mx-auto text-center relative z-10 mb-12">
+            <span class="text-xs uppercase tracking-widest text-rose font-semibold block mb-3">04 / Tungi Osmon</span>
+            <h2 class="font-serif text-3xl md:text-4xl font-light">Yulduzni tanlang</h2>
+            <p class="text-champagne/60 text-sm mt-2">Osmonimdagi har bir yorug' nuqta Siz haqingizdagi o'ylarimdir.</p>
+        </div>
 
-  <section class="section" id="constellation">
-    <div class="eyebrow-line"></div>
-    <h2 class="section-heading">Buni qanday isbotlayman?</h2>
-    <div class="const-wrap" id="constWrap">
-      <svg viewBox="0 0 400 300">
-        <path class="const-line" d="M 200 40 C 120 40 60 100 60 150 C 60 220 140 250 200 290 C 260 250 340 220 340 150 C 340 100 280 40 200 40 Z" />
-        <circle class="const-dot" cx="200" cy="40" r="3"/>
-        <circle class="const-dot" cx="60" cy="150" r="3"/>
-        <circle class="const-dot" cx="200" cy="290" r="3"/>
-        <circle class="const-dot" cx="340" cy="150" r="3"/>
-        <circle class="const-dot" cx="120" cy="80" r="2.4"/>
-        <circle class="const-dot" cx="280" cy="80" r="2.4"/>
-      </svg>
-    </div>
-    <div class="const-copy">
-      <p class="reveal">Sevgini raqam bilan o'lchab bo'lmaydi.</p>
-      <p class="reveal">Shuning uchun men uni hisoblamadim.</p>
-      <p class="reveal">Men faqat shuni bilaman: seni sevishim — sendan nimadir talab qilishim degani emas.</p>
-      <p class="reveal">Ba'zan chin dildan sevish — insonning tanlovini hurmat qilish hamdir.</p>
-    </div>
-  </section>
+        <div class="max-w-3xl mx-auto h-72 rounded-3xl glass-dark relative flex items-center justify-center p-8 border border-rose/20 text-center">
+            <div id="sky-message" class="font-serif text-xl md:text-2xl text-champagne font-light italic">
+                "Sizning tabassumingiz kunduzgi quyoshdan ham ko'proq yorug'lik beradi."
+            </div>
+            <!-- Interactive Star Buttons -->
+            <div class="absolute inset-0 pointer-events-none">
+                <button onclick="setSkyMsg('Siz bilan o\'tgan har bir lahza — hayotimdagi eng qimmatbaho sovg\'a.')" class="pointer-events-auto absolute top-10 left-1/4 w-3 h-3 rounded-full bg-blush animate-ping hover:scale-150 transition-transform"></button>
+                <button onclick="setSkyMsg('Sizning borligingizning o\'ziyoq ko\'nglimga xotirjamlik olib keladi.')" class="pointer-events-auto absolute bottom-12 right-1/4 w-2.5 h-2.5 rounded-full bg-champagne hover:scale-150 transition-transform"></button>
+                <button onclick="setSkyMsg('Dunyoning barcha go\'zalliklari Sizning nigohingizda mujassam.')" class="pointer-events-auto absolute top-1/3 right-12 w-3 h-3 rounded-full bg-blush hover:scale-150 transition-transform"></button>
+            </div>
+        </div>
+    </section>
 
-  <section class="section" id="night">
-    <div class="eyebrow-line" style="background:#e8c39e;"></div>
-    <h2 class="section-heading">Kichik tafsilotlar</h2>
-    <p class="lede">Har bir yulduz — bitta kichik fikr. Ustiga bosing.</p>
-    <div class="sky" id="sky"></div>
-    <p class="sky-hint">yulduzlarga teging</p>
-  </section>
+    <!-- ================= 11. LETTER SECTION ================= -->
+    <section class="py-32 bg-ivory px-6 relative">
+        <div class="max-w-3xl mx-auto text-center mb-16">
+            <span class="text-xs uppercase tracking-widest text-rose font-semibold block mb-3">05 / Maxsus Maktub</span>
+            <h2 class="font-serif text-3xl md:text-5xl font-light text-burgundy">Sizga atalgan so'zlar</h2>
+        </div>
 
-  <section class="section" id="letter">
-    <div class="eyebrow-line"></div>
-    <h2 class="section-heading">Xat</h2>
-    <div class="envelope" id="envelope">
-      <div class="env-body"></div>
-      <div class="env-flap"></div>
-      <div class="env-seal">🌷</div>
-      <span class="env-hint">Oxirgi xatni ochish</span>
-    </div>
-    <div class="letter-paper" id="letterPaper">
-      <p>Men sendan hech narsani kutmayman.</p>
-      <p>Menga "meni sev" deb aytishga haqqim yo'q.</p>
-      <p>Men faqat o'zimdagi hisni yashirmaslikni xohladim.</p>
-      <p>Agar bir kun kayfiyating tushsa, shu saytni esla.</p>
-      <p>Chunki bu yerda seni majburlaydigan hech narsa yo'q.</p>
-      <p>Faqat seni chin dildan yaxshi ko'radigan bir insonning kichik dunyosi bor.</p>
-      <p class="final-line">Va agar bugun tabassum qilgan bo'lsang — demak, bu sayt o'z vazifasini bajardi. 🌷</p>
-    </div>
-  </section>
+        <!-- Premium Physical-Paper-Inspired Envelope -->
+        <div class="max-w-xl mx-auto">
+            <div id="envelope" onclick="openLetter()" class="cursor-pointer bg-[#FDF8F5] p-10 md:p-16 rounded-2xl shadow-xl border border-champagne relative transition-all duration-500 hover:shadow-2xl text-center group">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-burgundy flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                    <!-- Wax seal minimal tulip symbol -->
+                    <span class="text-blush text-xl">🌷</span>
+                </div>
+                <p class="font-serif text-burgundy/80 text-lg tracking-widest uppercase mt-12">Ochish uchun bosing</p>
+            </div>
 
-  <section class="section" id="final">
-    <h2 class="final-heading">
-      Sen mening hikoyamning javobi bo'lishing shart emas.
-      <span class="pause">Ba'zan insonning hayotimizda bo'lishining o'zi chiroyli sabab bo'ladi.</span>
-    </h2>
-    <div class="final-tulip">
-      <svg width="70" height="100" viewBox="0 0 70 100" fill="none">
-        <path d="M35 40 C 15 40 12 15 20 2 C 25 12 35 12 35 22 C 35 12 45 12 50 2 C 58 15 55 40 35 40 Z" fill="#c05c82"/>
-        <line x1="35" y1="40" x2="35" y2="95" stroke="#7a9a6b" stroke-width="2.4"/>
-        <path d="M35 65 C 20 60 12 68 10 80" stroke="#7a9a6b" stroke-width="2.2" fill="none"/>
-      </svg>
-    </div>
-    <button class="btn" id="finalBtn">Yana bir bor tabassum qil 🌷</button>
-  </section>
+            <!-- Letter Content (Hidden Initially) -->
+            <div id="letter-content" class="hidden bg-[#FDF8F5] p-8 md:p-14 rounded-2xl shadow-2xl border border-champagne relative animate-fade">
+                <button onclick="closeLetter()" class="absolute top-4 right-4 text-burgundy/40 hover:text-burgundy text-xl p-2">&times;</button>
+                <h3 class="font-serif text-2xl md:text-3xl text-burgundy mb-6 italic">Azizim...</h3>
+                <p class="text-burgundy/80 font-light leading-relaxed text-base md:text-lg mb-6">
+                    Ba'zida inson hayotida shunday lahzalar bo'ladiki, barcha so'zlar ojiz qoladi. Sizni uchratganimdan beri dunyoni boshqacha ranglarda ko'ra boshladim. Har bir kuningiz bahor gullaridek go'zal va quvonchli bo'lishini tilayman. Bu kichik sahifa esa shunchaki yuragimdagi iliq tuyg'ularning bir parchasi xolos.
+                </p>
+                <p class="text-right font-serif italic text-burgundy text-lg">Siz uchun maxsus 🤍</p>
+            </div>
+        </div>
+    </section>
 
-  <footer>qo'l bilan, sen uchun.</footer>
-</main>
+    <!-- ================= 12 & 13. FINAL QUESTION & YES/NO BUTTONS ================= -->
+    <section id="final-section" class="py-40 bg-ivory text-burgundy relative px-6 text-center">
+        <div class="max-w-2xl mx-auto">
+            <div class="mb-6">
+                <span class="inline-block w-3 h-3 rounded-full bg-rose/60"></span>
+            </div>
+            
+            <p class="font-serif text-2xl md:text-3xl text-burgundy/70 font-light italic mb-4">
+                Endi esa Sizdan birgina narsani so'rasam...
+            </p>
+            
+            <p class="font-serif text-xl md:text-2xl text-burgundy/60 font-light mb-12">
+                Kelajakda... agar taqdir bizni yana birga olib kelsa...
+            </p>
 
-<div class="petals-layer" id="petalsLayer" aria-hidden="true"></div>
-<div class="petals-message" id="petalsMessage"><span>Buguning chiroyli o'tsin.</span></div>
+            <h2 class="font-serif text-4xl md:text-6xl font-light text-burgundy mb-6 leading-tight">
+                Men bilan birga bo'lishni xohlarmidingiz?
+            </h2>
 
-<script>
-(function(){
-  "use strict";
+            <p class="text-burgundy/50 text-sm font-light mb-12">
+                Javobingiz qanday bo'lishidan qat'i nazar, uni hurmat qilaman.
+            </p>
 
-  // ---------- tulip svg factory ----------
-  function tulipSVG(opts){
-    opts = opts || {};
-    var w = opts.w || 40, h = opts.h || 64, color = opts.color || '#c05c82', stem = opts.stem || '#8aa876';
-    return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 40 64" fill="none" xmlns="http://www.w3.org/2000/svg">'
-      + '<path d="M20 24 C 8 24 6 8 12 1 C 15 8 20 8 20 14 C 20 8 25 8 28 1 C 34 8 32 24 20 24 Z" fill="'+color+'"/>'
-      + '<line x1="20" y1="24" x2="20" y2="60" stroke="'+stem+'" stroke-width="2"/>'
-      + '<path d="M20 40 C 10 36 5 42 3 50" stroke="'+stem+'" stroke-width="1.6" fill="none"/>'
-      + '</svg>';
-  }
+            <!-- Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6" id="action-buttons">
+                <button onclick="handleAnswer('yes')" class="w-full sm:w-auto px-10 py-4 rounded-full bg-rose text-ivory font-medium tracking-widest uppercase text-xs transition-all duration-300 hover:bg-[#D67A8D] hover:shadow-[0_10px_30px_rgba(232,137,155,0.4)]">
+                    Ha, albatta 🤍
+                </button>
+                <button id="no-btn" onmouseover="moveNoButton()" onclick="handleAnswer('no')" class="w-full sm:w-auto px-10 py-4 rounded-full border border-burgundy/30 text-burgundy font-medium tracking-widest uppercase text-xs transition-all duration-300 hover:border-burgundy">
+                    O'ylab ko'raman
+                </button>
+            </div>
+        </div>
+    </section>
 
-  // ---------- curtain ----------
-  var curtain = document.getElementById('curtain');
-  document.getElementById('continueBtn').addEventListener('click', function(){
-    curtain.classList.add('hide');
-    document.body.style.overflow = 'auto';
-  });
-  document.body.style.overflow = 'hidden';
-  setTimeout(function(){ if(!curtain.classList.contains('hide')){ /* wait for user */ } }, 0);
+    <!-- ================= 14. CUSTOM RESPONSE & SUPABASE SYSTEM ================= -->
+    <section class="py-20 bg-white/60 border-t border-rose/10 px-6">
+        <div class="max-w-xl mx-auto text-center">
+            <h3 class="font-serif text-2xl text-burgundy font-light mb-3">Yoki menga o'z so'zlaringiz bilan javob bering...</h3>
+            <p class="text-burgundy/60 text-xs mb-8">Sizning fikringiz men uchun nihoyatda muhim.</p>
 
-  // ---------- hero field ----------
-  var field = document.getElementById('tulipField');
-  var colors = ['#d888a3','#bd5a80','#e7b3c1','#98456a'];
-  for(var i=0;i<11;i++){
-    var d = document.createElement('div');
-    d.className = 'field-tulip';
-    var size = 30 + Math.random()*40;
-    d.style.width = size+'px';
-    d.innerHTML = tulipSVG({w:size, h:size*1.6, color: colors[i%colors.length]});
-    field.appendChild(d);
-  }
+            <form id="response-form" onsubmit="submitCustomResponse(event)" class="space-y-4">
+                <textarea id="custom-message" rows="4" placeholder="Bu yerga aytmoqchi bo'lgan gapingizni yozishingiz mumkin..." class="w-full p-4 rounded-2xl bg-ivory border border-rose/20 text-burgundy placeholder-burgundy/40 focus:outline-none focus:border-rose text-sm resize-none"></textarea>
+                <button type="submit" class="w-full py-4 rounded-full bg-burgundy text-ivory font-medium tracking-widest uppercase text-xs transition-all duration-300 hover:bg-burgundy-dark hover:shadow-lg">
+                    Javobingizni yuborish
+                </button>
+            </form>
+            <div id="success-notice" class="hidden mt-6 p-4 rounded-2xl bg-blush/20 text-burgundy text-sm font-light">
+                Javobingiz men uchun yetib bordi. Rostini aytganingiz uchun rahmat. 🌷
+            </div>
+        </div>
+    </section>
 
-  // ---------- cards ----------
-  var cardData = [
-    {t:'Tabassuming', b:"Ba'zan bir insonning tabassumi kunni o'zgartirib yuborishi mumkin."},
-    {t:"Ko'zlaring", b:"Ularni ta'riflashga so'z izladim. Keyin tushundim — ayrim narsalarni tariflash emas, his qilish kerak."},
-    {t:'Oddiyliging', b:"Men seni mukammal bo'lganing uchun emas, o'zing bo'lganing uchun qadrlayman."},
-    {t:'Ovozing', b:"Eshitganda, kun sekinlashib qolgandek bo'ladi."},
-    {t:'Qarashing', b:"Bir lahzalik nazar ham esda qolarkan."},
-    {t:'Xayoling', b:"Sen haqingda o'ylash — hech qachon vaqt yo'qotish emas edi."},
-    {t:'O\u2019zing bo\u2019lganing', b:"Boshqa hech kim seni almashtira olmaydi — va bu, aslida, eng go'zal narsa."}
-  ];
-  var grid = document.getElementById('cardsGrid');
-  cardData.forEach(function(c){
-    var card = document.createElement('div');
-    card.className = 'flip-card';
-    card.tabIndex = 0;
-    card.setAttribute('role','button');
-    card.setAttribute('aria-label', c.t);
-    card.innerHTML =
-      '<div class="flip-inner">'
-      + '<div class="flip-face flip-front">' + tulipSVG({w:30,h:48}) + '<div class="card-title">'+c.t+'</div><div class="flip-hint">bosing</div></div>'
-      + '<div class="flip-face flip-back"><p>'+c.b+'</p></div>'
-      + '</div>';
-    function toggle(){ card.classList.toggle('flipped'); }
-    card.addEventListener('click', toggle);
-    card.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
-    grid.appendChild(card);
-  });
+    <!-- Footer Credit -->
+    <footer class="py-12 bg-burgundy text-champagne/50 text-center text-xs tracking-widest uppercase">
+        <span>Siz uchun maxsus yaratildi • 2026</span>
+    </footer>
 
-  // ---------- garden ----------
-  var gardenMsgs = [
-    "Bugun tabassuming unutilmasin.",
-    "Kayfiyating tushsa, bu yerda seni kutadigan kichik bir sabab bor.",
-    "Sen bilmasang ham, kimningdir kunini chiroyli qilgan bo'lishing mumkin.",
-    "Men seni o'zgartirishni emas, baxtli ko'rishni xohlayman.",
-    "Kichik quvonchlar ham qadrlidir.",
-    "Sen o'ylagandan ko'ra kuchliroqsan.",
-    "Bir chashka choy, bir sokin lahza — senga tegishli bo'lsin.",
-    "Bugun o'zingga mehribon bo'l."
-  ];
-  var plot = document.getElementById('gardenPlot');
-  gardenMsgs.forEach(function(msg, idx){
-    var t = document.createElement('div');
-    t.className = 'plot-tulip';
-    t.tabIndex = 0;
-    t.setAttribute('role','button');
-    t.setAttribute('aria-label','lola');
-    var size = idx===0 ? 60: (46 + Math.random()*18);
-    t.style.width = size+'px';
-    t.innerHTML = tulipSVG({w:size,h:size*1.6}) + '<div class="whisper">'+msg+'</div>';
-    if(idx===0){ t.classList.add('bloomed'); }
-    function bloom(){ t.classList.toggle('bloomed'); }
-    t.addEventListener('click', bloom);
-    t.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); bloom(); } });
-    plot.appendChild(t);
-  });
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // GSAP Hero Entrance Animations
+        window.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline();
+            tl.to("#hero-line-1", { opacity: 1, y: 0, duration: 1.2, delay: 0.3 })
+              .to("#hero-line-2", { opacity: 1, y: 0, duration: 1.2 }, "-=0.8")
+              .to("#hero-line-3", { opacity: 1, width: "6rem", duration: 1 }, "-=0.8")
+              .to("#hero-line-4", { opacity: 1, duration: 1 }, "-=0.6")
+              .to("#hero-btn-container", { opacity: 1, duration: 1 }, "-=0.6");
+        });
 
-  // ---------- constellation reveal on view ----------
-  var constWrap = document.getElementById('constWrap');
-  var constObs = new IntersectionObserver(function(entries){
-    entries.forEach(function(en){ if(en.isIntersecting){ constWrap.classList.add('in-view'); constObs.disconnect(); } });
-  }, {threshold:0.5});
-  constObs.observe(constWrap);
+        function startExperience() {
+            gsap.to("#hero", {
+                opacity: 0,
+                y: -50,
+                duration: 1,
+                onComplete: () => {
+                    document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
 
-  // ---------- night sky ----------
-  var starMsgs = [
-    "Bugun seni nima xursand qilgan bo'lsa, o'sha narsa yana ko'paysin.",
-    "Sen kulganingda, dunyo bir zum to'xtaydi.",
-    "Eng qiyin kunlaring ham o'tib ketadi.",
-    "Sen o'zing bilganingdan ko'ra yorqinroqsan.",
-    "Bir kun, sen buni o'qib, xotirjam tabassum qilasan degan umiddaman.",
-    "Har bir kichik yutuging qadrga loyiq.",
-    "Sen kimningdir kunini yaxshilagansan — buni bilmasang ham.",
-    "O'zingga vaqt ajratishga haqqing bor.",
-    "Sen yolg'iz emassan.",
-    "Bu dunyoda seni yaxshi ko'radigan odam bor — hech narsa talab qilmasdan.",
-    "Charchagan kuning ham, sen — sen bo'lib qolaverasan.",
-    "Ba'zan eng chiroyli narsalar — sodda lahzalarda yashiringan."
-  ];
-  var sky = document.getElementById('sky');
-  var skyW = 100, skyH = 100;
-  var positions = [];
-  for(var s=0;s<starMsgs.length;s++){
-    var x = 6 + Math.random()*88;
-    var y = 6 + Math.random()*82;
-    positions.push({x:x,y:y});
-  }
-  positions.forEach(function(pos, idx){
-    var star = document.createElement('button');
-    star.className='star';
-    star.style.left = pos.x+'%';
-    star.style.top = pos.y+'%';
-    star.style.animationDelay = (Math.random()*3)+'s';
-    star.setAttribute('aria-label','yulduz');
-    var note = document.createElement('div');
-    note.className='star-note';
-    note.style.left = pos.x+'%';
-    note.style.top = Math.max(pos.y-6,4)+'%';
-    note.textContent = starMsgs[idx];
-    sky.appendChild(star);
-    sky.appendChild(note);
-    star.addEventListener('click', function(){
-      var wasOpen = note.classList.contains('show');
-      document.querySelectorAll('.star-note.show').forEach(function(n){ n.classList.remove('show'); });
-      if(!wasOpen){ note.classList.add('show'); }
-    });
-  });
+        // Garden Modal functionality
+        function openGardenMessage(text) {
+            document.getElementById('garden-modal-text').innerText = text;
+            const modal = document.getElementById('garden-modal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('garden-modal-content').classList.remove('scale-95');
+            document.getElementById('garden-modal-content').classList.add('scale-100');
+        }
 
-  // ---------- envelope ----------
-  var envelope = document.getElementById('envelope');
-  var letterPaper = document.getElementById('letterPaper');
-  envelope.addEventListener('click', function(){
-    envelope.classList.add('open');
-    setTimeout(function(){ letterPaper.classList.add('show'); }, 500);
-  });
+        function closeGardenMessage() {
+            const modal = document.getElementById('garden-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('garden-modal-content').classList.remove('scale-100');
+            document.getElementById('garden-modal-content').classList.add('scale-95');
+        }
 
-  // ---------- final petals ----------
-  var petalsLayer = document.getElementById('petalsLayer');
-  var petalsMessage = document.getElementById('petalsMessage');
-  document.getElementById('finalBtn').addEventListener('click', function(){
-    petalsLayer.classList.add('show');
-    petalsMessage.classList.add('show');
-    for(var p=0;p<70;p++){
-      var petal = document.createElement('div');
-      petal.className='petal';
-      petal.style.left = (Math.random()*100)+'%';
-      petal.style.setProperty('--drift', (Math.random()*140-70)+'px');
-      petal.style.animationDuration = (5+Math.random()*5)+'s';
-      petal.style.animationDelay = (Math.random()*3)+'s';
-      petalsLayer.appendChild(petal);
-    }
-  });
+        // Night Sky Star interaction
+        function setSkyMsg(txt) {
+            document.getElementById('sky-message').innerText = `"${txt}"`;
+        }
 
-  // ---------- scroll progress stem ----------
-  var stemFill = document.getElementById('stemFill');
-  var stemBloom = document.getElementById('stemBloom');
-  function onScroll(){
-    var doc = document.documentElement;
-    var pct = (doc.scrollTop) / (doc.scrollHeight - doc.clientHeight);
-    pct = Math.max(0, Math.min(1, pct||0));
-    stemFill.style.height = (pct*100)+'%';
-    stemBloom.style.bottom = (pct*74)+'vh';
-    stemBloom.style.transform = 'translate(-50%, 50%) scale('+(0.5+pct*0.7)+') rotate('+(pct*10)+'deg)';
-  }
-  window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
+        // Physical Paper Letter functionality
+        function openLetter() {
+            document.getElementById('envelope').classList.add('hidden');
+            document.getElementById('letter-content').classList.remove('hidden');
+        }
 
-})();
-</script>
+        function closeLetter() {
+            document.getElementById('letter-content').classList.add('hidden');
+            document.getElementById('envelope').classList.remove('hidden');
+        }
 
+        // Playful micro-interaction for NO button (Never blocks the user)
+        function moveNoButton() {
+            const btn = document.getElementById('no-btn');
+            const randomX = (Math.random() - 0.5) * 80;
+            const randomY = (Math.random() - 0.5) * 40;
+            btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }
+
+        function handleAnswer(ans) {
+            if(ans === 'yes') {
+                alert("Javobingiz uchun rahmat! Bu kunimni eng go'zal kuniga aylantirdi. 🤍");
+            } else {
+                alert("Tushunaman. Har qanday holatda ham samimiyatingiz uchun rahmat. 🌷");
+            }
+        }
+
+        // Supabase Integration Setup
+        // Replace with your actual Supabase project credentials when integrating
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        
+        let supabaseClient = null;
+        try {
+            if (SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            }
+        } catch(e) {
+            console.log('Supabase initialization pending configuration.');
+        }
+
+        async function submitCustomResponse(e) {
+            e.preventDefault();
+            const message = document.getElementById('custom-message').value.trim();
+            if(!message) return;
+
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('romantic_responses')
+                        .insert([{ message: message, created_at: new Date() }]);
+                    
+                    if (error) console.error('Supabase error:', error);
+                } catch(err) {
+                    console.error('Submission error:', err);
+                }
+            }
+
+            // Show success notice
+            document.getElementById('response-form').reset();
+            document.getElementById('success-notice').classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
